@@ -1,0 +1,50 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Unit {
+  createdAt DateTime  @default(now())
+  datasets  Dataset[]
+  id        String    @id @default(cuid())
+  name      String?
+  updatedAt DateTime  @updatedAt
+}
+
+model Geography {
+  coordinates Json?
+  createdAt   DateTime  @default(now())
+  datasets    Dataset[]
+  id          String    @id @default(cuid())
+  name        String?
+  updatedAt   DateTime  @updatedAt
+}
+
+model Dataset {
+  collectedDate DateTime?
+  createdAt     DateTime   @default(now())
+  description   String?
+  geography     Geography? @relation(fields: [geographyId], references: [id])
+  geographyId   String?
+  id            String     @id @default(cuid())
+  metric        Metric?    @relation(fields: [metricId], references: [id])
+  metricId      String?
+  name          String?
+  source        String?
+  unit          Unit?      @relation(fields: [unitId], references: [id])
+  unitId        String?
+  updatedAt     DateTime   @updatedAt
+}
+
+model Metric {
+  createdAt   DateTime  @default(now())
+  datasets    Dataset[]
+  description String?
+  id          String    @id @default(cuid())
+  name        String?
+  updatedAt   DateTime  @updatedAt
+}
